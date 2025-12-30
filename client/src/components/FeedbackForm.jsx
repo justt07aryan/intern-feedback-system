@@ -9,7 +9,7 @@ function FeedbackForm({ onAddFeedback }) {
     return;
   }
 
-  await fetch("http://localhost:5000/feedback", {
+  await fetch("https://intern-feedback-backend.onrender.com/feedback", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
