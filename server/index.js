@@ -68,5 +68,6 @@ app.delete("/feedback/:id", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:5000`);
+  console.log(`Server running on https://intern-feedback-backend.onrender.com
+`);
 });
