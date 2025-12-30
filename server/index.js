@@ -18,7 +18,12 @@ const app = express();
 const PORT = 5000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
+
 app.use(express.json());
 
 // Temporary in-memory storage
@@ -63,5 +68,5 @@ app.delete("/feedback/:id", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on https://intern-feedback-backend.onrender.com`);
+  console.log(`Server running on http://localhost:5000`);
 });
