@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const admin = require("firebase-admin");
+
 const serviceAccount = JSON.parse(
   process.env.FIREBASE_SERVICE_ACCOUNT
 );
@@ -10,8 +11,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-
 const db = admin.firestore();
+
 
 const app = express();
 const PORT = 5000;
@@ -36,21 +37,16 @@ app.get("/feedback", (req, res) => {
 // Add new feedback
 app.post("/feedback", async (req, res) => {
   try {
-    console.log("➡️ POST /feedback HIT");
-    console.log("➡️ Request body:", req.body);
-
-    const newFeedback = {
-      text: req.body.text,
-      createdAt: new Date()
-    };
+    const { text } = req.body;
 
     console.log("➡️ Writing to Firestore...");
 
-    const docRef = await db.collection("feedbacks").add(newFeedback);
+    await db.collection("feedbacks").add({
+      text,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-    console.log("✅ Firestore write SUCCESS, ID:", docRef.id);
-
-    res.status(201).json({ id: docRef.id, ...newFeedback });
+    res.status(200).json({ message: "Feedback saved" });
   } catch (error) {
     console.error("❌ Firestore write FAILED:", error);
     res.status(500).json({ error: "Firestore write failed" });
