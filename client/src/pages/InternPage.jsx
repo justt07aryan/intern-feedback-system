@@ -5,7 +5,7 @@ function InternPage() {
   const [feedbackList, setFeedbackList] = useState([]);
 
   const fetchFeedbacks = async () => {
-    const res = await fetch("http://localhost:5000/feedback");
+    const res = await fetch("https://intern-feedback-backend.onrender.com/feedback");
     const data = await res.json();
     setFeedbackList(data);
   };
@@ -15,7 +15,7 @@ function InternPage() {
   }, []);
 
   const addFeedback = async (text) => {
-    await fetch("http://localhost:5000/feedback", {
+    await fetch("https://intern-feedback-backend.onrender.com/feedback", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -27,7 +27,7 @@ function InternPage() {
   };
 
   const deleteFeedback = async (id) => {
-    await fetch(`http://localhost:5000/feedback/${id}`, {
+    await fetch(`https://intern-feedback-backend.onrender.com/feedback/${id}`, {
       method: "DELETE"
     });
 
