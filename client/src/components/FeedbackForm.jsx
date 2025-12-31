@@ -3,39 +3,58 @@ import { useState } from "react";
 function FeedbackForm({ onAddFeedback }) {
   const [feedback, setFeedback] = useState("");
 
-  const handleSubmit = async () => {
-  if (feedback.trim() === "") {
-    alert("Please enter feedback");
+  const API_URL = "https://intern-feedback-backend.onrender.com";
+
+  const handleSubmit = async (e) => {
+  console.log("🟢 SUBMIT CLICKED");
+
+  e.preventDefault();
+
+  if (!feedback || feedback.trim() === "") {
+    console.log("🔴 Text is empty");
     return;
   }
 
-  await fetch("https://intern-feedback-backend.onrender.com/feedback", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ text: feedback })
-  });
+  console.log("🟢 Text:", feedback);
 
-  setFeedback("");
+  try {
+    const response = await fetch(`${API_URL}/feedback`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: feedback }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    console.log("🟢 Response status:", response.status);
+  } catch (error) {
+    console.error("🔴 Fetch error:", error);
+  }
 };
 
 
   return (
-    <div style={styles.container}>
-      <textarea
-        placeholder="Enter today's work / feedback"
-        value={feedback}
-        onChange={(e) => setFeedback(e.target.value)}
-        style={styles.textarea}
-      />
-      <br />
-      <button onClick={handleSubmit} style={styles.button}>
-        Submit
-      </button>
-    </div>
-  );
-}
+  <form style={styles.container} onSubmit={handleSubmit}>
+    <textarea
+      placeholder="Enter today's work / feedback"
+      value={feedback}
+      onChange={(e) => setFeedback(e.target.value)}
+      style={styles.textarea}
+      required
+    />
+
+    <br />
+
+    <button type="submit" style={styles.button}>
+      Submit
+    </button>
+  </form>
+);
+
 
 const styles = {
   container: {
@@ -55,5 +74,5 @@ const styles = {
     cursor: "pointer"
   }
 };
-
+}
 export default FeedbackForm;
