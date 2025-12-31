@@ -21,10 +21,7 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://prismatic-tartufo-1d72dc.netlify.app"
-    ],
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
