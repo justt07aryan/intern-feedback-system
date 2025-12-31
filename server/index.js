@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
@@ -15,14 +16,19 @@ const db = admin.firestore();
 
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"],
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://prismatic-tartufo-1d72dc.netlify.app"
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
 app.use(express.json());
 
@@ -44,19 +50,22 @@ app.post("/feedback", async (req, res) => {
   try {
     const { text } = req.body;
 
-    console.log("➡️ Writing to Firestore...");
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ error: "Empty feedback" });
+    }
 
     await db.collection("feedbacks").add({
       text,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.status(200).json({ message: "Feedback saved" });
-  } catch (error) {
-    console.error("❌ Firestore write FAILED:", error);
-    res.status(500).json({ error: "Firestore write failed" });
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("Firestore error:", err);
+    res.status(500).json({ error: "Failed to save feedback" });
   }
 });
+
 
 
 // Delete feedback
